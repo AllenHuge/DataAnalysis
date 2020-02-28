@@ -25,14 +25,16 @@ def mysql_login(schema_name = ''):
         print('mysql登录失败：'+e)
 
 #df插入mysql
-def df2mysql(df,schema_name, table_name,if_exists='replace'):
+def df2mysql(df,schema_name, table_name, chunksize=None, if_exists='replace',index=False,dtype=None):
     try:
         engine_file = 'mysql+pymysql://'+my_user+':'+my_password+'@'+my_host+'/'+schema_name
         engine = create_engine(engine_file)
         df.to_sql(  table_name
                   , engine
                   , if_exists=if_exists
-                  , index=True
+                  , index=index
+                  , chunksize = chunksize
+                  , dtype = dtype
                   )
         return 0
     except Exception as e:

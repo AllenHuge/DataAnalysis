@@ -13,7 +13,7 @@ conn = mysql_login()
 
 #sql脚本
 sql = '''
-select * from ext_data_stock.stock_quotation_his;
+select * from ext_data_stock.stock_base_info;
 '''
 
 # #游标查询
@@ -28,22 +28,23 @@ select * from ext_data_stock.stock_quotation_his;
 df = pd.read_sql(sql=sql,con = conn)
 # print(df)
 
-# 画图
-p = figure(plot_width=600,
-           plot_height=400,
-           x_axis_type='datetime',
-           tools=['hover,box_select,box_zoom,reset,wheel_zoom,pan,save'],
-           x_axis_label = '交易日期',
-           y_axis_label = '每日收盘点位',
-           title = '000001.SH日K图',
-           title_location = 'above'
-          )
-
-p.line(df['DateTime'],df['CLOSE']
-       ,line_color = 'red'
-       ,line_alpha = 1
-       # ,line_dash = 'dashed'
-      )
-
-output_file('../templates/000001SH.html')
-show(p)
+# # 画图
+# p = figure(plot_width=600,
+#            plot_height=400,
+#            x_axis_type='datetime',
+#            tools=['hover,box_select,box_zoom,reset,wheel_zoom,pan,save'],
+#            x_axis_label = '交易日期',
+#            y_axis_label = '每日收盘点位',
+#            title = '000001.SH日K图',
+#            title_location = 'above'
+#           )
+#
+# p.line(df['DateTime'],df['CLOSE']
+#        ,line_color = 'red'
+#        ,line_alpha = 1
+#        # ,line_dash = 'dashed'
+#       )
+#
+# output_file('../templates/000001SH.html')
+# show(p)
+print(df)

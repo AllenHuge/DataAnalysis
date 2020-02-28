@@ -1,16 +1,13 @@
 from docx import Document
 from docx.shared import Pt,Inches,Cm
 import pandas as pd
-import datetime
 from datetime import timedelta
 import math
-from pyecharts.charts import Line,Bar, Page,Kline,Grid
-from pyecharts import options as opts
 from pyecharts.render import make_snapshot
 from snapshot_selenium import snapshot
 from common.plotbypyecharts import kline_profession
-
-
+import logging
+from logging.handlers import RotatingFileHandler
 from common.db_operation import mysql_login
 
 # 行情明细脚本
@@ -27,6 +24,22 @@ SELECT  DateTime
         ,SWING
 FROM    ext_data_stock.stock_quotation_his
 '''
+
+# 日志配置
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler("create_docx.log",
+                              encoding="utf-8",
+                              maxBytes=10*1024*1024,
+                              backupCount=5)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s-%(funcName)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+console = logging.StreamHandler()
+console.setFormatter(formatter)
+console.setLevel(logging.INFO)
+logger.addHandler(console)
 
 # 昨日行情模板
 
@@ -48,6 +61,7 @@ temp_period = '''
 def get_quot_day():
     #创建连接
     conn = mysql_login()
+    logger.info("获取最新行情数据连接成功...")
     # pandas查询
     df = pd.read_sql(sql=sql, con=conn)
     conn.close()
@@ -72,6 +86,8 @@ def get_quot_day():
 def get_quot_period(days):
     #创建连接
     conn = mysql_login()
+    logger.info("获取区间行情数据连接成功...")
+
     # pandas查询
     df = pd.read_sql(sql=sql, con=conn)
     conn.close()
@@ -133,8 +149,10 @@ def output_docx(doc_path='../result_set/doc_test1.docx', *p_days):
     ph_format.space_before = Pt(10)  # 设置段前间距
     ph_format.space_after = Pt(12)  # 设置段后间距
     ph_format.line_spacing = Pt(19)  # 设置行间距
+    logger.info("行情信息写入完毕...")
 
     # 新建表格1
+    logger.info("正在生成图片...")
     table = document.add_table(rows=1, cols=1)
     cell = table.cell(0, 0)
     paragraph = cell.paragraphs[0]
@@ -143,6 +161,7 @@ def output_docx(doc_path='../result_set/doc_test1.docx', *p_days):
     run.add_picture('../result_set/000001SH.png', width=Inches(6.0))
 
     # 新建表格2
+    logger.info("正在生成表格...")
     data_dtl = data_dtl[['DateTime', 'OPEN', 'CLOSE', 'LOW', 'HIGH', 'VOLUME', 'AMT', 'PCT_CHG']]
     data_dtl['DateTime'] = data_dtl['DateTime'].apply(lambda x: x.strftime("%Y-%m-%d"))
 
@@ -160,7 +179,9 @@ def output_docx(doc_path='../result_set/doc_test1.docx', *p_days):
     table2.autofit = True
 
     # 保存文档
+    logger.info("正在生成文档...")
     document.save(doc_path)
+    logger.info("文档保存成功...")
 
 
 if __name__ == "__main__":

@@ -2,10 +2,10 @@ import baostock as bstk
 import pandas as pd
 import numpy as np
 from common.db_operation import df2mysql, mysql_login
-import bs4 as bs
 import requests #python的http客户端
 import re
 import sqlalchemy
+import datetime
 
 
 def getHtml(page):
@@ -100,8 +100,12 @@ def insertCode():
              )
     return codenum_curr,codenum_yest
 
+def main():
+    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+    codenum_curr, codenum_yest = insertCode()
+    print("{0}，今日共{1}只上市股票,前一交易日共{2}只上市股票。".format(current_date,str(codenum_curr),str(codenum_yest)))
+
 
 
 if __name__ == '__main__':
-    codenum_curr, codenum_yest = insertCode()
-    print("前一交易日共{0}只上市股票，今日共{1}只上市股票.".format(str(codenum_yest),str(codenum_curr)))
+    main()
