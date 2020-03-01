@@ -27,7 +27,7 @@ def mysql_login(schema_name = ''):
 #df插入mysql
 def df2mysql(df,schema_name, table_name, chunksize=None, if_exists='replace',index=False,dtype=None):
     try:
-        engine_file = 'mysql+pymysql://'+my_user+':'+my_password+'@'+my_host+'/'+schema_name
+        engine_file = 'mysql+mysqlconnector://'+my_user+':'+my_password+'@'+my_host+'/'+schema_name
         engine = create_engine(engine_file)
         df.to_sql(  table_name
                   , engine

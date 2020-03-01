@@ -188,10 +188,24 @@ def main():
 if __name__ == "__main__":
     # 获取个股日K数据
     # res = getStockQuot('2020-02-26', '2020-12-31', 'sh.688396')
-    # res = getStockQuot('2019-01-01','2020-12-31',None)
+    # res = getStockQuot('2006-01-01','2020-12-31',None)
     # res.to_csv('../result_set/quotation.csv',encoding='gbk')
     # print(res)
 
     # current_date = datetime.datetime.now().strftime('%Y-%m-%d')
     # print(current_date)
-    main()
+    # main()
+
+    ##获取指数日K数据
+    index_dict = {
+                    'sh.000001':'上证综指',
+                    'sh.000016':'上证50',
+                    'sh.000300':'沪深300',
+                    'sh.000905':'中证500',
+                    }
+    index_data_rows = getIndexQuot('2006-01-01','2020-01-31', index_dict=index_dict)
+    print("获取了{}条指数行情数据".format(index_data_rows))
+
+    ## 获取个股日K数据
+    stock_data_rows = getStockQuot('2006-01-01','2020-01-31', None)
+    print("获取了{}条个股行情数据".format(stock_data_rows))

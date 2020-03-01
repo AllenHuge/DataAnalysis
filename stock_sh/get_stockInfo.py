@@ -83,8 +83,8 @@ def insertCode():
 
     # 股票基本信息插入mysql数据库
     dtype_dict ={
-        "stock_code": sqlalchemy.types.NVARCHAR(length=10),
-        "stock_name": sqlalchemy.types.NVARCHAR(length=10),
+        "stock_code": sqlalchemy.types.NVARCHAR(length=20),
+        "stock_name": sqlalchemy.types.NVARCHAR(length=20),
         "ipo_date": sqlalchemy.types.DateTime(),
         "out_date": sqlalchemy.types.DateTime(),
         "stock_type": sqlalchemy.types.NVARCHAR(length=5),
