@@ -109,9 +109,11 @@ class Analy_up_down(Resource):
         upDown_flag = getDicts_raw.get('upDown_flag')
         data = getUpDownDistr(start_date, end_date, upDown_flag)
         ch_colnames = ['占比','天数']
-        rows = data.values.tolist()
+        data.insert(0,'ratio',data.index)
+        data2=data.to_dict(orient='split')
+        rows = data2['data']
         pic = getDistrPic(data)
-        pic.render('../result_set/down-distribution.html')
+        pic.render('D:\\PyProjects\\DataAnalysis\\result_set\\down-distribution.html')
         end_time = time.time()
         result.update({
             'success': True,

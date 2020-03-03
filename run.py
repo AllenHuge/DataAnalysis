@@ -17,4 +17,5 @@ def homepage():
 api.add_resource(Users, "/users")
 
 if __name__ == '__main__':
-    app.run(debug=True,host='127.0.0.1',port=5000)
+    # app.run(debug=True,host='127.0.0.1',port=5000)
+    app.run(debug=True,host='172.22.193.42',port=5000)

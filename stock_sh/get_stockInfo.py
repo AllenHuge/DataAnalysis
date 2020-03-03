@@ -50,19 +50,18 @@ def getStockInfo():
     print('login respond  error_msg:'+lg.error_msg)
     # 获取证券基本资料
     data_list = []
-    stock_list = getCode()
-    for stock in stock_list:
-        stock_code = stock
-        rs = bstk.query_stock_basic(code="sh.{}".format(stock_code))
-        # rs = bs.query_stock_basic(code_name="浦发银行")  # 支持模糊查询
+    # stock_list = getCode()
+    # rs = bstk.query_stock_basic(code="sh.{}".format(stock_code))
+    rs = bstk.query_stock_basic()
 
-        # 打印结果集
-        while (rs.error_code == '0') & rs.next():
-            # 获取一条记录，将记录合并在一起
-            data_list.append(rs.get_row_data())
+    # 打印结果集
+    while (rs.error_code == '0') & rs.next():
+        # 获取一条记录，将记录合并在一起
+        data_list.append(rs.get_row_data())
     result = pd.DataFrame(data_list, columns=rs.fields)
     # 登出系统
     bstk.logout()
+
     df = result
     df.columns = ['stock_code','stock_name','ipo_date','out_date','stock_type','stock_status']
     df['out_date'] = result['out_date'].apply(lambda x: np.NaN if x=='' else x)
@@ -72,19 +71,21 @@ def getStockInfo():
 def insertCode():
     conn = mysql_login()
     sql = '''
-    select * from ext_data_stock.stock_base_info;
+    select * from ext_data_stock.stock_base_info where stock_code like 'sh.6%' and out_date is NULL;;
     '''
     code_yest = pd.read_sql(sql=sql,con = conn)
     conn.close()
     codenum_yest = len(code_yest)
 
     code_curr = getStockInfo()
-    codenum_curr = len(code_curr)
+    code_sh = code_curr[code_curr['stock_code'].str.startswith('sh.6')]
+    code_sh_curr = code_sh[code_sh['out_date'].isnull()]
+    codenum_curr = len(code_sh_curr)
 
     # 股票基本信息插入mysql数据库
     dtype_dict ={
         "stock_code": sqlalchemy.types.NVARCHAR(length=20),
-        "stock_name": sqlalchemy.types.NVARCHAR(length=20),
+        "stock_name": sqlalchemy.types.NVARCHAR(length=100),
         "ipo_date": sqlalchemy.types.DateTime(),
         "out_date": sqlalchemy.types.DateTime(),
         "stock_type": sqlalchemy.types.NVARCHAR(length=5),
@@ -109,3 +110,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # code = getCode()
+    # with open('../result_set/code.txt', 'w', encoding='utf-8') as f:
+    #     for c in code:
+    #         f.write(c+'\n')
