@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+<head>
+    <meta charset="UTF-8">
+    <title>数据列表</title>
+    <style type="text/css">
+        body{
+            background-color: #d2b48c;
+            <!--margin-left:20%;-->
+            <!--margin-right:20%;-->
+            border:2px dotted black;
+            padding:10px 10px 10px 10px;
+            font-family:sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+    <h1>上证综指行情</h1>
+    <!--<a href="/add/">添加操作</a>-->
+    <hr>
+    <table border="1px" width="800px">
+        <tr style="text-align:center">
+            <th>日期</th>
+            <th>股票代码</th>
+            <th>股票名称</th>
+            <th>开盘价</th>
+            <th>最高价</th>
+            <th>最低价</th>
+            <th>收盘价</th>
+        </tr>
+        {% for i in datalist %}
+        <tr style="text-align:center">
+            <td>{{ i[0] }}</td>
+            <td>{{ i[1] }}</td>
+            <td>{{ i[2] }}</td>
+            <td>{{ i[3] }}</td>
+            <td>{{ i[4] }}</td>
+            <td>{{ i[5] }}</td>
+            <td>{{ i[6] }}</td>
+            <!--<td><a href="/del?id={{ i.id }}">删除</a> | <a href="/cha?id={{ i.id }}">更改</a></td>-->
+        </tr>
+        {% endfor %}
+
+    </table>
+    </center>
+
+</body>
+</html>
